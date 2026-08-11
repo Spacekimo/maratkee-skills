@@ -1,0 +1,48 @@
+{
+  "window_end": "2026-08-11T12:00:00+05:00",
+  "publication_recheck_completed": false,
+  "sources": [
+    {
+      "id": "S1",
+      "role": "weekly_signal",
+      "title": "Replace with the canonical source title",
+      "canonical_url": "https://example.org/research/new-result",
+      "source_type": "independent_research",
+      "published_at": "2026-08-08",
+      "updated_at": null,
+      "event_at": "2026-08-08",
+      "evidence_date": "2026-08-08",
+      "change_type": "new_research",
+      "change_summary": "A new measured result was published during the weekly window.",
+      "claim": "The exact claim intended for the digest.",
+      "is_primary": true,
+      "is_major": false,
+      "methodology_summary": "Study design, population, and measurement method.",
+      "sample_size": "n=000",
+      "supersession_checked_at": "2026-08-11T10:00:00+05:00",
+      "supersession_query": "Exact title + update/follow-up/revised/correction; official research index checked",
+      "superseded_by": null
+    },
+    {
+      "id": "S2",
+      "role": "supporting",
+      "title": "Recent supporting evidence",
+      "canonical_url": "https://example.org/research/supporting",
+      "source_type": "industry_report",
+      "published_at": "2026-07-20",
+      "updated_at": null,
+      "event_at": "2026-07-20",
+      "evidence_date": "2026-07-15",
+      "change_type": "article_publication",
+      "change_summary": "Recent supporting evidence for a weekly signal.",
+      "claim": "The supporting claim.",
+      "is_primary": true,
+      "is_major": false,
+      "methodology_summary": "Survey or telemetry methodology.",
+      "sample_size": "n=000",
+      "supersession_checked_at": "2026-08-11T10:00:00+05:00",
+      "supersession_query": "Official site and title update search checked",
+      "superseded_by": null
+    }
+  ]
+}
