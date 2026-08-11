@@ -1,7 +1,7 @@
 ---
 name: weekly-ai-management-digest
-description: Use when producing a weekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces a 7-day novelty window, 60-day evidence window, 180-day major-research exception, supersession checks, an independent freshness critic, and publication-day revalidation.
-version: 2.6.0
+description: Use when producing a weekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces a 7-day novelty window, 60-day evidence window, 180-day major-research exception, claim-level evidence ratings, supersession checks, an independent freshness critic, and publication-day revalidation.
+version: 2.8.0
 author: Marat Kiniabulatov
 license: MIT
 metadata:
@@ -18,7 +18,7 @@ This skill produces a weekly evidence-led digest about how AI changes engineerin
 
 The digest starts with what substantively changed during the last seven days. Supporting evidence must remain current enough for a fast-moving AI landscape. Fresh publication dates cannot disguise old datasets or superseded findings.
 
-Before every issue, read `references/source-freshness-gate.md` and validate the source register with `scripts/freshness-check.py`.
+Before every issue, read `references/source-freshness-gate.md` and `references/claim-level-evidence-rating.md`, then validate the source register with `scripts/freshness-check.py`.
 
 ## When to Use
 
@@ -89,16 +89,13 @@ Record separately:
 
 Use the underlying evidence date for the 60/180-day gate. A fresh article cannot launder old evidence into the current window.
 
-### No stale padding
+### No stale padding; separate method-maturity audit
 
-Evidence outside the allowed windows is excluded from:
+Evidence outside the allowed windows cannot serve as a weekly signal or ordinary supporting evidence and is excluded from reading-list and source-balance calculations.
 
-- the evidence base;
-- the reading list;
-- credibility ratings;
-- source-balance calculations.
+A narrowly relevant older foundational study or historical backtest may be used only in a separate method-maturity audit. Label it as foundational, check whether it has been superseded, and use it solely to establish what the method has historically validated. It cannot make a stale theme current, support a current performance number, or upgrade a current-condition or implementation-specific claim.
 
-If fresh corroboration is unavailable, label the item an **early signal** and lower its evidence rating.
+Freshness eligibility and claim maturity are separate axes: first establish why the theme belongs this week, then inspect the full historical record to scope what the underlying method has actually validated. Save this audit as `sources/foundation-audit.md`; do not put its sources in freshness or source-balance counts.
 
 ## Pipeline
 
@@ -145,6 +142,8 @@ For every candidate:
 6. Classify the source as `weekly_signal`, `supporting`, or `major_research`.
 7. Run the supersession search from `references/source-freshness-gate.md`.
 8. Record the search query, check time, and any newer version.
+9. Atomize the proposed section into checkable claims and map each claim to direct evidence.
+10. Record assumptions, exclusions, population, scale, and deployment conditions. Treat any draft claim that exceeds them as a blocking error.
 
 ## Phase 4 — Validate freshness
 
@@ -183,6 +182,8 @@ Cluster accepted sources into three to five themes. Each theme needs:
 - a practical management implication;
 - an evidence-strength rating.
 
+Rate the **full evidence base for the central claim**, not the prestige or type of the newest source. Distinguish mathematical validity, field calibration, and transfer to the context claimed in the draft. For mixed sections, split claims or state the different levels explicitly in the rating rationale. Follow `references/claim-level-evidence-rating.md`.
+
 Organize by themes, not by source type. Newsletter discoveries and research findings should read as one coherent narrative.
 
 A useful source-mix target is roughly half newsletter/industry discovery and half research, measured by the origins of substantive claims. The ratio is a diagnostic, not a visible section structure.
@@ -212,6 +213,7 @@ issue/
 │   ├── 02-extended-research.md
 │   ├── 03-deep-research.md
 │   ├── source-register.json
+│   ├── foundation-audit.md
 │   ├── freshness-critic.md
 │   └── contradictions.md
 ├── weekly-digest.md
@@ -226,6 +228,10 @@ issue/
 - Preserve uncertainty, confidence intervals, and metric definitions.
 - Explain technical terms inline.
 - Keep one main claim per section.
+- Atomize sections into checkable claims before assigning a rating.
+- Rate the full evidence base for the claim, not the anchor source.
+- Distinguish method correctness, field validation, and transfer to the claimed context.
+- Audit exclusions and assumptions before describing scale, dependencies, or deployment conditions.
 - Use self-explanatory headings.
 - Separate local task acceleration from end-to-end delivery impact.
 - Reconcile percentages, denominators, and cost scopes.
@@ -237,11 +243,11 @@ issue/
 1. **Using article publication date as evidence date.** Record the dataset or experiment date separately.
 2. **Treating a newsletter as the primary source.** Follow the link to the canonical report.
 3. **Expanding the weekly window after a skipped issue.** Weekly novelty remains seven days.
-4. **Keeping a famous older study as background.** Remove it when it exceeds the evidence window.
+4. **Treating a famous older study as a weekly signal.** It may appear only in a clearly labeled method-maturity audit and never counts toward freshness or source balance.
 5. **Calling a source major because the publisher is famous.** Qualification depends on methodology and coverage.
 6. **Searching for updates only once.** Repeat the check on publication day.
 7. **Mistaking a negative metric value for improvement.** Preserve the source's sign convention and interpretation.
-8. **Padding a weak signal with stale evidence.** Label it early and lower the evidence rating.
+8. **Padding a weak weekly signal with foundational evidence.** Old validation can scope an established method; it cannot make a current implementation or result more credible.
 9. **Letting a secondary article borrow authority from an old primary study.** Evaluate the underlying evidence date.
 10. **Drafting before validation.** The source register and freshness critic are preconditions.
 
@@ -255,6 +261,11 @@ issue/
 - [ ] Canonical primary URLs are used where available.
 - [ ] Every source has a supersession search query and check timestamp.
 - [ ] No known superseded source remains in the evidence base.
+- [ ] Every section was atomized into checkable claims before rating.
+- [ ] Each badge rates the full evidence base for the central claim, not the anchor source.
+- [ ] Method validity, field calibration, and transfer to the claimed context were assessed separately.
+- [ ] Source assumptions and exclusions do not contradict scale or mechanisms claimed in the draft.
+- [ ] Any older foundational evidence is labeled, supersession-checked, and excluded from freshness and balance counts.
 - [ ] The freshness validator passes before synthesis.
 - [ ] The independent freshness critic has no unresolved rejection.
 - [ ] The publication-day 24–48 hour search is complete.
@@ -263,5 +274,6 @@ issue/
 ## References
 
 - `references/source-freshness-gate.md` — full freshness and supersession policy.
+- `references/claim-level-evidence-rating.md` — claim atomization, full-evidence-base ratings, and assumption/exclusion audit.
 - `templates/source-register.json` — machine-readable source register template.
 - `scripts/freshness-check.py` — standard-library validator for the 7/60/180-day gates.

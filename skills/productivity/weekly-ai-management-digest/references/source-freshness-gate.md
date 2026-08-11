@@ -52,11 +52,31 @@ The exception requires all of the following:
 
 Vendor blogs, consultancy estimates, single-company cases, opinion pieces, and small convenience surveys do not qualify regardless of brand recognition.
 
-## No stale background padding
+## No stale background padding; one narrow maturity-audit exception
 
-Sources outside the windows are excluded from the evidence base, reading list, evidence scale, and 50/50 source calculation. If no fresh corroboration exists, label the item an **early signal** and lower its evidence rating.
+Sources outside the windows cannot serve as `weekly_signal`, `supporting`, or `major_research`. They are excluded from the reading list, freshness validator, and source-balance calculation.
 
-An older result may appear only as a historical value explicitly reproduced and compared inside an in-window primary source. Cite the current source; do not restore the older study as independent evidence.
+A narrowly relevant older source may be consulted in a separate method-maturity audit only when all of these conditions hold:
+
+1. it is foundational research, a peer-reviewed method study, an independent replication, or a transparent historical backtest directly relevant to the claim;
+2. the draft labels it as **foundational** or **historical validation** and gives the original year;
+3. a supersession search found no correction, retraction, or stronger replacement that changes interpretation;
+4. it is used to answer only what the method has historically validated, not what changed this week;
+5. it is stored in `sources/foundation-audit.md`, outside the machine-readable freshness register and source-balance counts.
+
+Foundational evidence cannot:
+
+- qualify a theme for the weekly issue;
+- support a current performance or adoption number;
+- replace fresh corroboration;
+- upgrade a current-condition or implementation-specific claim.
+
+This creates two independent checks:
+
+- **freshness eligibility:** why this theme belongs in this week's issue;
+- **claim maturity:** how well the underlying method or phenomenon has been validated over time.
+
+Never collapse these checks into one score. A fresh implementation guide may be a valid weekly signal while its specific extension remains weakly calibrated; an older method can be mature without becoming fresh news.
 
 ## Supersession check
 

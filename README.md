@@ -11,6 +11,8 @@ Produces a weekly evidence-led digest about how AI changes engineering managemen
 - a seven-day novelty gate for every main theme;
 - a 60-day window for ordinary supporting evidence;
 - a 180-day exception for qualified major research;
+- claim-level evidence ratings based on the full evidence base, not the anchor source;
+- a separate method-maturity audit for narrowly relevant foundational studies and historical backtests;
 - checks for follow-ups, corrections, revised versions, and superseded findings;
 - a machine-readable source register;
 - a standard-library Python freshness validator;
