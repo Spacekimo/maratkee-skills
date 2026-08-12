@@ -6,18 +6,11 @@ Public, reusable agent skills maintained by Marat Kiniabulatov.
 
 ### `weekly-ai-management-digest`
 
-Produces a weekly evidence-led digest about how AI changes engineering management. It includes:
+Produces a weekly evidence-led digest about how AI changes engineering management. Three independent source layers (curated feeds, extended web research, deep research API) with defined fallbacks. Freshness gates (7/60/180 days), claim-level evidence ratings, supersession checks, independent freshness critic, and publication-day revalidation.
 
-- a seven-day novelty gate for every main theme;
-- a 60-day window for ordinary supporting evidence;
-- a 180-day exception for qualified major research;
-- claim-level evidence ratings based on the full evidence base, not the anchor source;
-- a separate method-maturity audit for narrowly relevant foundational studies and historical backtests;
-- checks for follow-ups, corrections, revised versions, and superseded findings;
-- a machine-readable source register;
-- a standard-library Python freshness validator;
-- an independent freshness-critic step;
-- publication-day revalidation.
+### `extended-research`
+
+Multi-source research pipeline: dimensions → threads → search → relevance filter → deep reading → gap analysis → drill-down → synthesis. Includes optional deep research API mode and interactive source review for editorial workflows. Freshness gates and citation compliance for time-bounded research.
 
 ## Install
 

@@ -1,4 +1,4 @@
-# Source Freshness Gate for Human Loop Weekly
+# Source Freshness Gate
 
 ## Purpose
 

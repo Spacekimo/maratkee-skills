@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate Human Loop Weekly source freshness.
+"""Validate source freshness for the weekly AI management digest.
 
 Usage:
     python scripts/freshness-check.py sources/source-register.json
