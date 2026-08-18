@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "last_reviewed_at": null,
+  "signals": [
+    {
+      "signal_id": "SIG-YYYY-NNN",
+      "statement": "A concise, falsifiable observation of change — not a source title.",
+      "scope": "Population, team context, or operating condition where this may apply.",
+      "why_it_matters": "The management implication worth watching, without turning it into a recommendation.",
+      "first_observed_at": "2026-08-24",
+      "first_issue_id": "ISSUE-YYYY-NN",
+      "status": "active",
+      "evidence_rating": "low",
+      "review_after": "2026-10-05",
+      "source_refs": [
+        {
+          "url": "https://example.org/primary-source",
+          "source_id": "S1",
+          "note": "What this source directly supports."
+        }
+      ],
+      "review_log": [
+        {
+          "reviewed_at": "2026-08-24",
+          "status": "active",
+          "reason": "First observation; independent corroboration is not yet available.",
+          "evidence_urls": []
+        }
+      ]
+    }
+  ]
+}

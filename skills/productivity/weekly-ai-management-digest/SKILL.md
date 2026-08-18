@@ -154,6 +154,19 @@ A weekly digest can contain early signals. Its editorial spine must remain evide
 
 Record each theme's `evidence_rating`, `editorial_role` (`core` or `watch`), and any action IDs it supports in the source register. The final critic rejects a headline, core claim, or action without a medium/high trace.
 
+## Early Signals and Signal Register
+
+A `Watch signal` is a falsifiable observation of change — not a source link or an author's summary. An issue may contain a distinct early-signals block with several one-line signals or one briefly explained signal. State the signal, its scope, why it may matter, and its supporting sources; do not title the item after a source.
+
+Maintain one cross-issue `signals/signal-register.json`:
+
+1. Add only new low-evidence observations with a stable `signal_id`, issue/date provenance, a falsifiable wording, scope, and supporting sources.
+2. Review every open signal during each issue: `active` → `confirmed`, `expired`, or `disproved`.
+3. Promotion to `confirmed` requires independent new corroboration and a new claim audit. It may then become a medium/high core claim, but never automatically.
+4. Lack of corroboration is not disproof. Mark `expired` only after its review date with a reason; use `disproved` only for direct counterevidence.
+
+Run `scripts/signal-register-check.py signals/signal-register.json` before release. Start from `templates/signal-register.json`.
+
 ## Pipeline
 
 ## Phase 1 — Define the issue window
@@ -282,7 +295,9 @@ issue/
 │   ├── freshness-critic.md
 │   └── contradictions.md
 ├── weekly-digest.md
-└── weekly-digest-social.md
+├── weekly-digest-social.md
+└── signals/
+    └── signal-register.json          ← cross-issue watch-signal register
 ```
 
 ## Evidence and Writing Rules
@@ -349,3 +364,5 @@ issue/
 - `templates/source-register.json` — machine-readable source register template.
 - `scripts/freshness-check.py` — standard-library validator for the 7/60/180-day gates.
 - `scripts/evidence-check.py` — validates that headline/core claims and recommendations meet the medium/high threshold, while low-evidence experiments remain explicitly bounded.
+- `scripts/signal-register-check.py` — validates the cross-issue early-signal register and its status history.
+- `templates/signal-register.json` — template for the cross-issue early-signal register.
