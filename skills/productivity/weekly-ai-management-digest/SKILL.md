@@ -1,6 +1,6 @@
 ---
 name: weekly-ai-management-digest
-description: Use when producing a weekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces strict freshness, evidence-quality, and supersession gates before publication.
+description: Use when producing a weekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces strict 7/60/180 freshness, claim-level medium-or-high eligibility for core claims and recommendations, and supersession gates before publication.
 ---
 
 # Weekly AI Management Digest
@@ -142,6 +142,18 @@ A narrowly relevant older foundational study or historical backtest may be used 
 
 Freshness eligibility and claim maturity are separate axes: first establish why the theme belongs this week, then inspect the full historical record to scope what the underlying method has actually validated. Save this audit as `sources/foundation-audit.md`; do not put its sources in freshness or source-balance counts.
 
+## Editorial Evidence Threshold
+
+A weekly digest can contain early signals. Its editorial spine must remain evidence-led.
+
+1. **Core threshold:** the title, issue thesis, every main section claim, and every management action need a **medium or high** evidence rating after claim-level audit. A fresh source alone is insufficient.
+2. **Low-evidence signals:** a low-rated observation may appear only in a clearly labelled, short `Watch signal` block. It cannot determine the title, a core section, an action, or corroborate a medium/high claim.
+3. **Claim, not source:** rate the full evidence base for the exact claim. A newsletter can trigger investigation; direct corroboration is required before it becomes a core claim.
+4. **Action trace:** map every action to a named core claim and its medium/high rating before release. Otherwise remove it or frame it as a bounded experiment with an explicit uncertainty.
+5. **No averaging:** split mixed-evidence sections. A sound general principle does not upgrade a weak implementation-specific claim.
+
+Record each theme's `evidence_rating`, `editorial_role` (`core` or `watch`), and any action IDs it supports in the source register. The final critic rejects a headline, core claim, or action without a medium/high trace.
+
 ## Pipeline
 
 ## Phase 1 — Define the issue window
@@ -196,15 +208,16 @@ For every candidate:
 9. Atomize the proposed section into checkable claims and map each claim to direct evidence.
 10. Record assumptions, exclusions, population, scale, and deployment conditions. Treat any draft claim that exceeds them as a blocking error.
 
-## Phase 4 — Validate freshness
+## Phase 4 — Validate freshness and editorial eligibility
 
 Run:
 
 ```bash
 python scripts/freshness-check.py sources/source-register.json
+python scripts/evidence-check.py sources/source-register.json
 ```
 
-Any error blocks drafting. Fix the register, replace the source, or remove the claim. Never waive a stale date silently.
+Any error blocks drafting. Fix the register, replace the source, narrow/remove the claim, or turn a low-evidence idea into a bounded experiment. Never waive a stale date or a low-evidence core claim silently.
 
 The register must contain at least one valid `weekly_signal`. Each main theme in the final issue must map to a weekly signal, even when the theme also uses recent supporting or major research.
 
@@ -251,9 +264,10 @@ Within 24–48 hours of publication:
 
 ```bash
 python scripts/freshness-check.py sources/source-register.json --publication
+python scripts/evidence-check.py sources/source-register.json
 ```
 
-Publication is blocked when the validator exits non-zero or the freshness critic has unresolved objections.
+Publication is blocked when either validator exits non-zero or the freshness critic has unresolved objections.
 
 ## Recommended Output Artifacts
 
@@ -326,6 +340,7 @@ issue/
 - [ ] The independent freshness critic has no unresolved rejection.
 - [ ] The publication-day 24–48 hour search is complete.
 - [ ] The validator passes with `--publication` before release.
+- [ ] `scripts/evidence-check.py` passes: headline/core claims and recommendations are medium/high; every low-evidence experiment has a stated uncertainty or stop condition.
 
 ## References
 
@@ -333,3 +348,4 @@ issue/
 - `references/claim-level-evidence-rating.md` — claim atomization, full-evidence-base ratings, and assumption/exclusion audit.
 - `templates/source-register.json` — machine-readable source register template.
 - `scripts/freshness-check.py` — standard-library validator for the 7/60/180-day gates.
+- `scripts/evidence-check.py` — validates that headline/core claims and recommendations meet the medium/high threshold, while low-evidence experiments remain explicitly bounded.

@@ -1,6 +1,27 @@
 {
   "window_end": "2026-08-11T12:00:00+05:00",
   "publication_recheck_completed": false,
+  "headline_theme_ids": ["T1"],
+  "themes": [
+    {
+      "id": "T1",
+      "title": "Replace with a self-explanatory management theme",
+      "central_claim": "The exact central management claim for this theme.",
+      "evidence_rating": "medium",
+      "editorial_role": "core",
+      "supported_action_ids": ["A1"]
+    }
+  ],
+  "actions": [
+    {
+      "id": "A1",
+      "text": "The management action stated in the draft.",
+      "theme_id": "T1",
+      "evidence_rating": "medium",
+      "action_type": "recommendation",
+      "uncertainty_or_stop_condition": null
+    }
+  ],
   "sources": [
     {
       "id": "S1",
