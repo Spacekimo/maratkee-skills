@@ -251,6 +251,8 @@ Save the review as `sources/freshness-critic.md`. Resolve every rejection before
 
 ## Phase 6 — Synthesize
 
+Before outlining, run `references/issue-novelty-gate.md` against the preceding issue. State the distinct management object and decision for this issue, retain only a short bridge where useful, and remove material that merely re-proves the preceding issue's thesis.
+
 Cluster accepted sources into three to five themes. Each theme needs:
 
 - the substantive weekly change;
@@ -317,6 +319,7 @@ issue/
 - Reconcile percentages, denominators, and cost scopes.
 - Never fabricate first-person anecdotes.
 - Avoid presenting adoption activity as evidence of business impact.
+- Preserve continuity without repetition: every issue must name a distinct management object, decision, mechanism, or evidence base; a fresh source alone does not make a repeated argument novel.
 
 ## Common Pitfalls
 
@@ -361,6 +364,7 @@ issue/
 
 - `references/source-freshness-gate.md` — full freshness and supersession policy.
 - `references/claim-level-evidence-rating.md` — claim atomization, full-evidence-base ratings, and assumption/exclusion audit.
+- `references/issue-novelty-gate.md` — maps the preceding issue, defines the new management object, and removes repeated material before outlining.
 - `templates/source-register.json` — machine-readable source register template.
 - `scripts/freshness-check.py` — standard-library validator for the 7/60/180-day gates.
 - `scripts/evidence-check.py` — validates that headline/core claims and recommendations meet the medium/high threshold, while low-evidence experiments remain explicitly bounded.
