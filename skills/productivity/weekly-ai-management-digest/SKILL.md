@@ -265,7 +265,7 @@ Rate the **full evidence base for the central claim**, not the prestige or type 
 
 Organize by themes, not by source type. Newsletter discoveries and research findings should read as one coherent narrative.
 
-A useful source-mix target is roughly half newsletter/industry discovery and half research, measured by the origins of substantive claims. The ratio is a diagnostic, not a visible section structure.
+Run `references/source-origin-audit.md` before final drafting. Target a 50/50 mix of newsletter and research origins among substantive body claims; neither layer may exceed 60% without a documented reason. Record each claim's origin separately from the canonical evidence URL. The ratio is a diagnostic, not a visible section structure.
 
 ## Phase 7 — Publication-day recheck
 
@@ -295,6 +295,7 @@ issue/
 │   ├── source-register.json
 │   ├── foundation-audit.md
 │   ├── freshness-critic.md
+│   ├── source-origin-audit.md
 │   └── contradictions.md
 ├── weekly-digest.md
 ├── weekly-digest-social.md
@@ -354,6 +355,7 @@ issue/
 - [ ] Method validity, field calibration, and transfer to the claimed context were assessed separately.
 - [ ] Source assumptions and exclusions do not contradict scale or mechanisms claimed in the draft.
 - [ ] Any older foundational evidence is labeled, supersession-checked, and excluded from freshness and balance counts.
+- [ ] Source-origin audit counts substantive body claims by newsletter/research origin; neither layer exceeds 60% without a documented reason.
 - [ ] The freshness validator passes before synthesis.
 - [ ] The independent freshness critic has no unresolved rejection.
 - [ ] The publication-day 24–48 hour search is complete.
@@ -365,6 +367,7 @@ issue/
 - `references/source-freshness-gate.md` — full freshness and supersession policy.
 - `references/claim-level-evidence-rating.md` — claim atomization, full-evidence-base ratings, and assumption/exclusion audit.
 - `references/issue-novelty-gate.md` — maps the preceding issue, defines the new management object, and removes repeated material before outlining.
+- `references/source-origin-audit.md` — records each substantive claim's newsletter/research origin separately from final evidence and enforces the source-mix gate.
 - `templates/source-register.json` — machine-readable source register template.
 - `scripts/freshness-check.py` — standard-library validator for the 7/60/180-day gates.
 - `scripts/evidence-check.py` — validates that headline/core claims and recommendations meet the medium/high threshold, while low-evidence experiments remain explicitly bounded.
