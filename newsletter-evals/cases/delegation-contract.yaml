@@ -1,0 +1,21 @@
+- description: "Contract: agent autonomy is a delegation contract, not a generic productivity claim"
+  vars:
+    brief: |
+      This is an evaluation run, not a publication task. Do not publish, deploy, alter files,
+      or claim that you performed work you did not perform.
+
+      Prepare a short Russian Human Loop Weekly draft fragment for PO/Tech Lead.
+      Topic: a team wants to let an AI agent autonomously merge low-risk changes.
+
+      Use only sources that you can verify during this run. If you cannot establish an evidence-led
+      claim, state the uncertainty and propose a bounded experiment. Make the management object
+      explicit: a delegation contract. Include goal, authority boundary, acceptance evidence,
+      escalation condition, and risk owner. Do not describe a policy as if it already proves a
+      delivery or business outcome.
+  assert:
+    - type: javascript
+      value: "typeof output === 'string' && output.length >= 400"
+    - type: javascript
+      value: "/(границ|полномоч|разрешен)/i.test(output)"
+    - type: javascript
+      value: "/(эскалац|владелец риска|ответствен)/i.test(output)"

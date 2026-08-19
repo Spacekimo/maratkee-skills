@@ -1,0 +1,14 @@
+services:
+  promptfoo:
+    image: ghcr.io/promptfoo/promptfoo@sha256:d8170b04ee87a873da7fcb798f0e0b4eedbc62b32de4bdd8c0732d796359e1db
+    container_name: promptfoo-newsletter
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - /root/.local/share/promptfoo-newsletter:/home/promptfoo/.promptfoo
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 1500M

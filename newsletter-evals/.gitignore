@@ -1,0 +1,4 @@
+# Promptfoo generates local output; the self-hosted SQLite database lives outside this repo.
+promptfoo-results.json
+.promptfoo/
+node_modules/

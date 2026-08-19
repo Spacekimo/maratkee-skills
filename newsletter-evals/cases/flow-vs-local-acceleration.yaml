@@ -1,0 +1,22 @@
+- description: "Contract: evidence-led Weekly draft stays bounded and names the management object"
+  vars:
+    brief: |
+      This is an evaluation run, not a publication task. Do not publish, deploy, alter files,
+      or claim that you performed work you did not perform.
+
+      Prepare a short Russian draft fragment for Human Loop Weekly for PO/Tech Lead.
+      Topic: an AI coding assistant speeds up implementation, while total delivery time does
+      not improve because the work waits for review, a test environment, and a risk decision.
+
+      Use only sources that you can verify during this run. If current evidence is insufficient,
+      say so plainly and offer a bounded discovery step instead of inventing a result.
+      The fragment must: name one management object; distinguish local task speed from
+      end-to-end outcome; give one observable first action; avoid calling adoption or activity
+      a business result; and stay in natural Russian.
+  assert:
+    - type: javascript
+      value: "typeof output === 'string' && output.length >= 400"
+    - type: javascript
+      value: "/(путь задачи|маршрут задачи|поток)/i.test(output)"
+    - type: javascript
+      value: "/(ревью|сред|решени)/i.test(output)"

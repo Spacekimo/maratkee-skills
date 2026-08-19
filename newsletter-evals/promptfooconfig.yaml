@@ -1,0 +1,19 @@
+description: Human Loop Weekly — skill regression checks
+
+# Results are uploaded only to the loopback-bound Promptfoo instance.
+sharing:
+  apiBaseUrl: http://127.0.0.1:3000
+  appBaseUrl: http://127.0.0.1:3000
+
+prompts:
+  - '{{brief}}'
+
+providers:
+  - id: file://providers/hermes-newsletter.cjs
+    label: Hermes + weekly-ai-management-digest
+    config:
+      skill: weekly-ai-management-digest
+      timeoutMs: 540000
+
+# Every case is a small, reviewable contract. Add cases here before changing SKILL.md.
+tests: file://cases/*.yaml
