@@ -1,0 +1,69 @@
+name: Agent contract guard
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read contract path from PR description
+        id: contract
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          path=$(printf '%s\n' "$PR_BODY" | sed -nE 's|^[[:space:]]*Contract:[[:space:]]*([^[:space:]]+)[[:space:]]*$|\1|p' | head -n1)
+          test -n "$path" || { echo "PR description must contain: Contract: .agent/contracts/<TASK-ID>.json"; exit 1; }
+          test -f "$path" || { echo "Contract file not found: $path"; exit 1; }
+          echo "path=$path" >> "$GITHUB_OUTPUT"
+
+      - name: Check changed files against contract scope
+        env:
+          CONTRACT: ${{ steps.contract.outputs.path }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          python3 - <<'PY'
+          import fnmatch, json, os, subprocess, sys
+
+          with open(os.environ['CONTRACT'], encoding='utf-8') as f:
+              contract = json.load(f)
+
+          required = ['id', 'version', 'task', 'owner', 'scope', 'stop_conditions', 'evidence']
+          missing = [key for key in required if not contract.get(key)]
+          if missing:
+              sys.exit('Incomplete contract: ' + ', '.join(missing))
+
+          scope = contract['scope']
+          allowed = scope.get('allow_paths', [])
+          denied = scope.get('deny_paths', [])
+          if not allowed:
+              sys.exit('Contract has no scope.allow_paths')
+
+          files = subprocess.check_output(
+              ['git', 'diff', '--name-only', os.environ['BASE'], os.environ['HEAD']], text=True
+          ).splitlines()
+          # The task contract itself may be added or updated in the same PR.
+          exempt = {os.environ['CONTRACT']}
+          violations = []
+          for path in files:
+              if path in exempt:
+                  continue
+              if any(fnmatch.fnmatch(path, pattern) for pattern in denied):
+                  violations.append(f'{path} matches denied path')
+              elif not any(fnmatch.fnmatch(path, pattern) for pattern in allowed):
+                  violations.append(f'{path} is outside allow_paths')
+
+          if violations:
+              sys.exit('Contract scope violation:\n' + '\n'.join('- ' + x for x in violations))
+          print(f"Contract {contract['id']} permits all {len(files)} changed file(s).")
+          PY

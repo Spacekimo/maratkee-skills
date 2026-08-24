@@ -1,0 +1,76 @@
+{
+  "id": "ORD-184",
+  "version": 1,
+  "task": "Update the integration test for a repeated create-order request.",
+  "agent": {
+    "name": "coding-agent",
+    "environment": "isolated-test"
+  },
+  "owner": {
+    "acceptance": "orders-tech-owner",
+    "escalation": "orders-tech-owner",
+    "fallback": "payments-engineering-manager",
+    "channel": "#orders-engineering",
+    "response_sla": "by end of working day"
+  },
+  "autonomy_level": "change_in_isolated_environment",
+  "outcome": {
+    "done_when": [
+      "A repeated request does not create a second order.",
+      "The required integration tests pass.",
+      "A draft pull request contains the required evidence."
+    ],
+    "out_of_scope": [
+      "Database schema changes",
+      "Public API changes",
+      "Production configuration changes"
+    ]
+  },
+  "sources_of_truth": [
+    "Current API specification",
+    "Architecture decision on idempotency",
+    "Existing integration tests"
+  ],
+  "scope": {
+    "allow_paths": [
+      "services/orders/**",
+      "tests/integration/orders/**"
+    ],
+    "deny_paths": [
+      "migrations/**",
+      "infra/**",
+      "public-api/**"
+    ]
+  },
+  "capabilities": {
+    "allowed": [
+      "create_branch",
+      "edit_code_in_allowed_paths",
+      "run_integration_tests",
+      "open_draft_pull_request"
+    ],
+    "forbidden": [
+      "merge_pull_request",
+      "deploy",
+      "change_database_schema",
+      "change_production_configuration",
+      "access_production_data"
+    ]
+  },
+  "stop_conditions": [
+    "The specification and code give incompatible answers.",
+    "The task requires personal or production data.",
+    "A required test fails and the cause cannot be localized.",
+    "The task requires a new permission or an out-of-scope file change."
+  ],
+  "evidence": {
+    "required": [
+      "Link to draft pull request",
+      "Test output or CI run URL",
+      "List of changed files",
+      "Short description of the verified scenario",
+      "Open assumptions and unanswered questions"
+    ]
+  },
+  "review_after": "after three runs or the first repeated stop condition"
+}

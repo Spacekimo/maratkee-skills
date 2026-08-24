@@ -8,6 +8,10 @@ Public, reusable agent skills maintained by Marat Kiniabulatov.
 
 Produces a weekly evidence-led digest about how AI changes engineering management. Three independent source layers (curated feeds, extended web research, deep research API) with defined fallbacks. Freshness gates (7/60/180 days), claim-level evidence ratings, supersession checks, independent freshness critic, and publication-day revalidation.
 
+### `agent-delegation-contract`
+
+A reusable contract-as-code starter kit for bounded AI-agent work: task contract, short `AGENTS.md`, and GitHub Actions path guard. It treats the contract as one part of the control system alongside least-privilege access, isolated environments, CI, and human approval.
+
 ### `extended-research`
 
 Multi-source research pipeline: dimensions → threads → search → relevance filter → deep reading → gap analysis → drill-down → synthesis. Includes optional deep research API mode and interactive source review for editorial workflows. Freshness gates and citation compliance for time-bounded research.
