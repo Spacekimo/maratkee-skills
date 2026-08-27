@@ -22,6 +22,8 @@ The templates in `templates/` provide a reusable starting point:
 - `AGENTS.md` — short persistent working agreement;
 - `contract-guard.yml` — GitHub Actions path-scope guard for pull requests.
 
+When an agent changes material user-visible behaviour or writes/changes acceptance tests, pair this skill with `agent-verification-assurance`. A delegation contract establishes *who may act and with what evidence*; the assurance skill establishes the minimum path showing why that evidence relates to the intended outcome.
+
 ## When to Use
 
 Use this skill when:
@@ -50,6 +52,7 @@ Before delegating work, establish which controls are actually available. Do not 
 | Test or validation command | Produce acceptance evidence | Define a manual acceptance procedure before launch |
 | Pull-request review | Human acceptance and traceability | Do not permit merge or other consequential action |
 | CI or equivalent path check | Verify changed files against scope | Use a mandatory manual diff review; label the gap explicitly |
+| Approved Acceptance Map for medium/high-risk behaviour changes | Keep requirement, example, test, and evidence visibly linked before code | Lower autonomy to prepare or obtain semantic-owner approval before implementation |
 
 ### Capability gate
 
@@ -61,6 +64,7 @@ Before a coding agent starts, verify all of the following:
 4. `capabilities.forbidden` prohibits merge, deployment, credential changes, production-data access, and any other out-of-scope consequential action.
 5. Required checks can run in the assigned environment.
 6. The agent's credentials and branch permissions do not exceed the contract.
+7. For a medium/high-risk behaviour change, an approved Acceptance Map exists and names its semantic owner.
 
 If a condition fails, either fix the environment or lower autonomy to **prepare**. Never compensate for missing technical controls with stronger wording in a prompt.
 
@@ -120,6 +124,18 @@ Require evidence that can be reviewed without trusting the agent's summary:
 
 A passing test is not blanket approval. The named acceptance owner decides whether the result meets the task outcome and whether a merge may happen.
 
+### Acceptance Map for material behaviour changes
+
+For a medium/high-risk change that creates or changes user-visible behaviour, a business rule, API contract, workflow, integration, or acceptance test semantics, add an Approval Map before code changes:
+
+```text
+requirement / outcome → approved acceptance example → executable test → CI evidence
+```
+
+Keep it as versioned structured data, for example `.agent/acceptance/<TASK-ID>.yml`, rather than as a separate hand-maintained diagram. The minimum row is: requirement ID and outcome, `given / when / then` example, semantic owner approval, linked test/manual procedure, and CI/manual evidence. The PR may render the path visually.
+
+The implementation agent may draft this map but cannot approve it or silently change its semantics. The semantic owner approves the outcome and examples **before** implementation; after implementation, engineering/quality review confirms that approved examples link to real tests and evidence. For the complete workflow, use `agent-verification-assurance` and its `acceptance-map.yml` template.
+
 ### 5. When must work stop and who decides?
 
 A stop condition must name the trigger, the escalation owner and channel, expected response time, fallback owner, and the package to send. On a stop condition, the agent makes **no new changes**.
@@ -170,7 +186,8 @@ If the action is irreversible, affects another person, or reaches a production/p
 3. Add narrow `allow_paths` and explicit `deny_paths` for migrations, infrastructure, public APIs, credentials, and production configuration where applicable.
 4. Define tests or observable evidence before the agent begins.
 5. Name the acceptance owner, escalation owner, fallback, channel, and response SLA.
-6. Review the contract with the accountable human before granting credentials or launching work.
+6. For a medium/high-risk behaviour change, draft the Acceptance Map and have its semantic owner approve it before code changes.
+7. Review the contract with the accountable human before granting credentials or launching work.
 
 ### Phase 3 — Enforce outside the prompt
 
@@ -190,8 +207,9 @@ Contract: .agent/contracts/<TASK-ID>.json
 1. Launch the agent with the task ID and exact contract path.
 2. On a stop condition, halt changes and send the escalation package.
 3. In CI, parse the contract, require key fields, and compare the pull-request file list with `allow_paths` and `deny_paths`.
-4. Review evidence against `done_when`, not against an agent-written success claim.
-5. The named acceptance owner decides whether to merge. No protected-branch merge or production step is performed automatically by this skill.
+4. For an Acceptance Map, check that every approved example has linked test/manual evidence and that the agent did not redefine acceptance semantics without owner approval.
+5. Review evidence against `done_when` and approved examples, not against an agent-written success claim.
+6. The named acceptance owner decides whether to merge. No protected-branch merge or production step is performed automatically by this skill.
 
 ### Phase 5 — Learn from exceptions
 
@@ -209,6 +227,7 @@ After the first repeated stop condition or the contract's `review_after` point:
 | Outcome cannot be accepted objectively | Phase 2 | Rewrite `done_when`, evidence, and out-of-scope work with the acceptance owner | Contract review and required checks |
 | Agent needs an out-of-scope file, permission, or environment | Phase 1 | Lower autonomy or have the owner explicitly revise scope and access | Capability gate and pre-flight |
 | Sources of truth disagree | Phase 2 | Record the conflict, obtain an owner decision, then amend the contract | Contract review; do not continue on the old branch state |
+| Agent needs to change an approved acceptance outcome or scenario | Phase 2 | Stop implementation; amend the Acceptance Map only after semantic-owner approval | Map review and required checks |
 | CI finds a changed-path violation | Phase 3 | Remove the change or revise the contract only after human approval | CI guard and required tests |
 | A stop condition repeats | Phase 5 | Strengthen the template, baseline policy, CI guard, or technical access control | Focused regression check and next contract review |
 
@@ -220,10 +239,11 @@ After the first repeated stop condition or the contract's `review_after` point:
 4. **Using broad globs such as `**` for convenience.** Start narrow, then expand only after a reviewable escalation.
 5. **Writing subjective acceptance criteria.** Replace “clean,” “correct,” or “better” with observable behaviour and evidence.
 6. **Treating a green CI run as product acceptance.** CI checks necessary evidence; a named owner accepts the outcome.
-7. **Putting sensitive content in the contract.** Contracts are versioned, reviewed, and often widely visible. Reference approved systems instead of copying secrets or data.
-8. **Auto-merging after a passing guard.** The guard validates only declared file scope and selected fields; it is not a risk assessment or approval gate.
-9. **Accumulating historical tasks in `AGENTS.md`.** Keep permanent instructions stable and task detail in versioned contract files.
-10. **Silently repeating exceptions.** Recurrent escalation is evidence that the baseline policy, template, or technical control needs revision.
+7. **Letting implementation redefine acceptance.** The agent may draft or challenge examples, but a named semantic owner approves material behaviour before code and any later semantic amendment.
+8. **Putting sensitive content in the contract.** Contracts are versioned, reviewed, and often widely visible. Reference approved systems instead of copying secrets or data.
+9. **Auto-merging after a passing guard.** The guard validates only declared file scope and selected fields; it is not a risk assessment or approval gate.
+10. **Accumulating historical tasks in `AGENTS.md`.** Keep permanent instructions stable and task detail in versioned contract files.
+11. **Silently repeating exceptions.** Recurrent escalation is evidence that the baseline policy, template, or technical control needs revision.
 
 ## Verification Checklist
 
@@ -236,6 +256,8 @@ After the first repeated stop condition or the contract's `review_after` point:
 - [ ] No secret, personal, customer, incident, or production credential is included.
 - [ ] The agent has only isolated, least-privilege access consistent with the contract.
 - [ ] Tests and evidence requirements exist before work begins.
+- [ ] For medium/high-risk behaviour changes, an approved Acceptance Map links requirement, acceptance example, verification, and evidence before code changes.
+- [ ] The implementation agent cannot change approved acceptance semantics without semantic-owner approval.
 - [ ] The PR links the exact contract and CI validates changed-file scope.
 - [ ] A named human reviews evidence and decides on merge.
 - [ ] Any consequential action has an independent approval gate and is not inferred from the contract.
@@ -246,3 +268,4 @@ After the first repeated stop condition or the contract's `review_after` point:
 - `templates/delegation-contract.json` — example machine-readable task contract.
 - `templates/AGENTS.md` — persistent agent working agreement.
 - `templates/contract-guard.yml` — GitHub Actions scope guard; adapt it to the repository's CI and branch rules.
+- `agent-verification-assurance` — lightweight Approval Map, test-semantic review, and intent-to-evidence traceability.

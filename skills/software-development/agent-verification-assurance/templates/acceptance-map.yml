@@ -1,0 +1,49 @@
+# One map per medium/high-risk change. Keep it in version control, for example:
+# .agent/acceptance/ORD-184.yml
+#
+# The map is the source of truth for intent-to-evidence links. Generate any PR
+# diagram from this file; do not maintain a separate hand-drawn matrix.
+work_item: ORD-184
+version: 1
+status: approved # draft | approved | superseded
+
+semantic_owner:
+  name: orders-product-owner
+  approval: approved
+  approved_at: 2026-08-27
+
+requirements:
+  - id: R-1
+    outcome: >-
+      A repeated order request with the same idempotency key does not create
+      a second order or a second charge.
+    source: docs/orders/idempotency.md#repeated-requests
+    risk: duplicate order and duplicate charge
+
+acceptance_examples:
+  - id: AT-1
+    requirement_refs: [R-1]
+    given: An accepted order exists for idempotency key K.
+    when: The client repeats the same valid create-order request with key K.
+    then: The original order is returned and no second charge is created.
+    rejects:
+      - A second order is created.
+      - The API reports success but creates a duplicate payment.
+    approval: approved # draft | approved | superseded
+
+verification:
+  - id: VT-1
+    acceptance_example_refs: [AT-1]
+    type: integration
+    test: tests/integration/orders/idempotency.spec.ts
+    baseline_result: fails # fails | passes_existing_behaviour | not_applicable
+    baseline_note: The requested repeat creates a duplicate order on the base commit.
+    candidate_result: passes
+    ci_evidence: https://ci.example.invalid/runs/123
+
+implementation:
+  pull_request: https://github.com/example/orders/pull/456
+  base_commit: abc123
+  candidate_commit: def456
+
+open_questions: []
