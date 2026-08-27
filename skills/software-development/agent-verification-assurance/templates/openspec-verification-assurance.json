@@ -1,0 +1,10 @@
+{
+  "risk_level": "medium",
+  "spec_mode": "openspec",
+  "canonical_spec_ref": "openspec/changes/prevent-duplicate-order/specs",
+  "assurance_record_ref": "openspec/changes/prevent-duplicate-order/assurance.yml",
+  "semantic_owner": "orders-product-owner",
+  "approval_required_before_code": true,
+  "semantic_changes_require_reapproval": true,
+  "independent_evidence_review": "required"
+}

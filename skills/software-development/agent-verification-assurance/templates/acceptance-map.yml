@@ -1,8 +1,10 @@
-# One map per medium/high-risk change. Keep it in version control, for example:
+# Use this standalone template when OpenSpec is not the canonical source of
+# requirements and scenarios. Keep one map per medium/high-risk change, for example:
 # .agent/acceptance/ORD-184.yml
 #
 # The map is the source of truth for intent-to-evidence links. Generate any PR
 # diagram from this file; do not maintain a separate hand-drawn matrix.
+mode: standalone
 work_item: ORD-184
 version: 1
 status: approved # draft | approved | superseded

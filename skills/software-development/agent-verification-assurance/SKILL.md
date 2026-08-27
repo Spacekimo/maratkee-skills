@@ -13,9 +13,9 @@ Use this skill when a green agent-authored test suite is not enough evidence tha
 requirement / outcome → approved acceptance example → executable verification → CI evidence → acceptance decision
 ```
 
-The central artifact is an **Acceptance Map**: a small versioned YAML file for one change. It is not a replacement for a requirements-management system, BDD tooling, human product judgment, or technically enforced permissions. It makes the minimum intent-to-evidence path visible before implementation and reviewable after it.
+The central artifact is an **assurance record**: a small versioned YAML file for one change. In `standalone` mode it is an Acceptance Map that owns requirements and examples; in `openspec` mode it links OpenSpec's canonical requirements and scenarios to tests, CI evidence, and approvals without copying them. It is not a replacement for a requirements-management system, BDD tooling, human product judgment, or technically enforced permissions.
 
-Do not require hidden model reasoning or chain-of-thought. Record observable provenance instead: the approved map version, requirement sources, agent run or contract ID, code/test references, CI evidence, assumptions, and human decisions.
+Do not require hidden model reasoning or chain-of-thought. Record observable provenance instead: the approved canonical-spec and assurance-record versions, requirement sources, agent run or contract ID, code/test references, CI evidence, assumptions, and human decisions.
 
 ## When to Use
 
@@ -35,7 +35,7 @@ Do not use it for:
 
 ## Required Capabilities
 
-Before relying on an Acceptance Map, verify that the team has:
+Before relying on an assurance record, verify that the team has:
 
 | Capability | Why it matters | If unavailable |
 |---|---|---|
@@ -47,19 +47,32 @@ Before relying on an Acceptance Map, verify that the team has:
 
 If the semantic owner cannot be reached or sources of truth conflict, the agent must stop and ask for a decision. Do not treat an agent's confidence as approval.
 
-## The Minimum Acceptance Map
+## Choose One Specification Mode
 
-Copy `templates/acceptance-map.yml` to `.agent/acceptance/<TASK-ID>.yml` for a medium- or high-risk change. Keep it small: normally one to five requirements and one to seven examples. Large backlogs are not made safer by copying every ticket into a matrix.
+Declare `spec_mode`, `canonical_spec_ref`, and `assurance_record_ref` in the delegation contract for every medium/high-risk change. Never infer the mode from the presence of an `openspec/` directory: a repository can be migrating or have historical artifacts. A change uses exactly one canonical source for requirement/scenario semantics. In `standalone`, both refs normally point to the same Acceptance Map; in `openspec`, the canonical ref points to the delta specs and the assurance ref points to `assurance.yml`.
 
-Each important behaviour needs only these links:
+| Mode | Canonical requirement and scenario source | Assurance record location | Template |
+|---|---|---|---|
+| `standalone` | Acceptance Map | `.agent/acceptance/<TASK-ID>.yml` | `templates/acceptance-map.yml` |
+| `openspec` | OpenSpec delta specs in the change folder | `openspec/changes/<CHANGE>/assurance.yml` | `templates/openspec-assurance.yml` |
+
+### Standalone mode
+
+Use when the team does not use OpenSpec for the change. The Acceptance Map is the source of truth and normally contains one to five requirements and one to seven examples. Each important behaviour needs only these links:
 
 1. **Requirement** — an ID, external outcome, source, and meaningful risk.
 2. **Acceptance example** — `given / when / then`, linked to one or more requirements.
 3. **Verification** — an executable test or a named manual check, linked to the example.
 4. **Evidence** — baseline/candidate result and CI run or equivalent record.
-5. **Approval** — the named semantic owner and the map version they approved.
+5. **Approval** — the named semantic owner and the record version they approved.
 
-Generate a diagram in a PR or documentation page from the YAML if useful, but keep the YAML as the single source of truth:
+### OpenSpec mode
+
+Use when OpenSpec is the team's source of truth. Write the requirement and `#### Scenario` once in the OpenSpec delta spec; do **not** copy their text into `assurance.yml`. The assurance record contains only semantic approval plus links from OpenSpec requirement/scenario references to verification and evidence.
+
+Use stable human-readable references such as `ordering/idempotency#prevent-duplicate-order` and `repeated-order-request`, not Markdown line numbers. If headings are routinely renamed, establish stable IDs in the team's OpenSpec convention before relying on automated checks.
+
+In either mode, render a diagram in a PR or documentation page from the structured record if useful. Do not maintain a separate hand-drawn matrix:
 
 ```text
 [R-1: repeated request creates no second order]
@@ -80,7 +93,7 @@ An acceptance example is sufficiently sane for implementation only when all of t
 - **Traceable:** it names the requirement(s) and authoritative source it elaborates.
 - **Risk-aware:** it represents the relevant happy path, exception, boundary, state transition, or integration condition for the change's risk. It need not enumerate every edge case.
 - **Owned:** a person accountable for product or domain meaning has approved it before implementation.
-- **Stable during the run:** an implementation agent cannot silently change its semantic intent. A change is a new map version and needs owner approval again.
+- **Stable during the run:** an implementation agent cannot silently change its semantic intent. A change requires a new approved assurance-record version and, in OpenSpec mode, a corresponding delta-spec amendment.
 
 Ask one forcing question for every important example:
 
@@ -97,27 +110,28 @@ Use the lightest proportionate mode:
 | Risk | Minimum assurance |
 |---|---|
 | Low | Observable `done_when`, ordinary test evidence, PR review |
-| Medium | Approved Acceptance Map before code; links from approved examples to tests and CI after code |
+| Medium | Approved canonical requirements/scenarios and assurance record before code; links to tests and CI after code |
 | High | Medium controls plus independent test/semantic review, targeted challenge scenarios, and release or operational evidence where relevant |
 
 Treat money movement, authorisation, personal data, public API, migrations, compliance rules, irreversible operations, and critical customer journeys as high risk unless a responsible owner explicitly classifies otherwise.
 
-### Phase 2 — Draft the map before code
+### Phase 2 — Draft the specification and assurance record before code
 
-1. Copy the template to `.agent/acceptance/<TASK-ID>.yml`.
-2. Write the requested **outcome**, not a proposed implementation.
-3. Link every acceptance example to a requirement source.
-4. State `given / when / then` in language a product or domain owner can read.
-5. Add one or two `rejects` items for each material example.
-6. Record uncertainties in `open_questions`; do not manufacture an answer from implementation details or untrusted issue text.
-7. Keep the map `draft`. The agent may draft it, but cannot approve it.
+1. Choose `standalone` or `openspec` explicitly in the delegation contract and set both references.
+2. In `standalone`, copy `acceptance-map.yml` to `.agent/acceptance/<TASK-ID>.yml`; write the requested **outcome**, not a proposed implementation.
+3. In `openspec`, draft the change proposal and delta spec under `openspec/changes/<CHANGE>/`; copy `openspec-assurance.yml` beside them, copy the `openspec-verification-assurance.json` fragment into the delegation contract, and reference OpenSpec requirements/scenarios without duplicating their text.
+4. Link every material acceptance example/scenario to an authoritative requirement source.
+5. State scenarios in language a product or domain owner can read; in standalone mode use `given / when / then` directly, and in OpenSpec mode follow the team's OpenSpec scenario convention.
+6. Add one or two `rejects` items for each material scenario in the assurance record.
+7. Record uncertainties in `open_questions`; do not manufacture an answer from implementation details or untrusted issue text.
+8. Keep the assurance record `draft`. The agent may draft it, but cannot approve it.
 
 ### Phase 3 — Semantic approval gate
 
-Before the implementation agent changes production code, the semantic owner reviews the map and chooses one outcome:
+Before the implementation agent changes production code, the semantic owner reviews the canonical requirements/scenarios and assurance record and chooses one outcome:
 
 - **approved** — the examples represent intended behaviour sufficiently for this risk;
-- **revise** — update requirement, examples, or scope and review the next map version;
+- **revise** — update requirement, scenarios, or scope and review the next approved version;
 - **clarify** — stop implementation until the source of truth is resolved.
 
 Approval answers:
@@ -128,19 +142,19 @@ It is not a code review and should not be delegated to the implementation agent.
 
 ### Phase 4 — Implement without moving the goalposts
 
-1. Give the implementation agent the approved map version and applicable delegation contract.
-2. The agent may write code and executable tests linked to the approved `AT-*` examples.
-3. The agent must stop if an example is ambiguous, contradicted by a higher-priority source, or requires a semantic change.
-4. Add a new map version for any accepted semantic amendment; record the owner, date, and superseded version.
+1. Give the implementation agent the approved assurance record and applicable delegation contract.
+2. The agent may write code and executable tests linked to approved examples/scenarios.
+3. The agent must stop if an example/scenario is ambiguous, contradicted by a higher-priority source, or requires a semantic change.
+4. Add a new assurance-record version for any accepted semantic amendment; in OpenSpec mode update the delta spec as well. Record the owner, date, and superseded version.
 5. For changed behaviour, run the new verification on the base commit when practical. Record `fails` if it exposes the gap. Use `passes_existing_behaviour` or `not_applicable` only with a concise reason.
 
 A test written after code can still be useful, but it cannot silently become the definition of acceptance. Link it to an already approved example, or route it as an amendment through Phase 3.
 
 ### Phase 5 — Verify and accept after code
 
-The PR reviewer checks the map from left to right:
+The PR reviewer checks the assurance record from left to right:
 
-1. Every approved `AT-*` links to an actual verification item.
+1. Every approved material example/scenario links to an actual verification item.
 2. Every material verification item names a test/manual procedure and CI/manual evidence.
 3. Tests check an observable outcome rather than only an internal call, mock, or implementation detail.
 4. The implementation did not change approved acceptance semantics without a new approval.
@@ -154,7 +168,8 @@ The semantic owner accepts the intended outcome. Engineering/quality reviewers a
 Use this in a PR description or review comment:
 
 ```text
-Acceptance Map: .agent/acceptance/<TASK-ID>.yml (version N)
+Canonical spec: <canonical_spec_ref>
+Assurance record: <assurance_record_ref> (mode: standalone|openspec; version N)
 
 [ ] Each changed user-visible behaviour maps to an approved AT example.
 [ ] Each AT example maps to a runnable test or named manual verification.
@@ -167,10 +182,10 @@ Acceptance Map: .agent/acceptance/<TASK-ID>.yml (version N)
 
 ## Trace and Provenance
 
-The Acceptance Map is the human-readable trace. Connect it to an agent delegation record where one exists:
+The assurance record is the human-readable trace. Connect it to an agent delegation record where one exists:
 
 ```text
-contract ID/version → Acceptance Map version → agent run ID → PR/commits → test/CI evidence → human decision
+contract ID/version → canonical spec version → assurance-record version → agent run ID → PR/commits → test/CI evidence → human decision
 ```
 
 Record only reviewable, necessary data. Good fields include task ID, map and contract versions, requirement sources, base/candidate commits, test command, CI URL, model/agent version if available, approvals, and open questions.
@@ -183,35 +198,39 @@ Do not store secrets, customer data, raw production logs, prompts containing sen
 |---|---|
 | Requirement and example conflict | Stop; semantic owner resolves the source of truth before code continues |
 | Test needs an internal implementation detail to pass | Rewrite it around an observable outcome or label it as a lower-level test, not acceptance evidence |
-| Agent proposes a new acceptance outcome after coding | Treat it as a map amendment; obtain approval before using it for acceptance |
-| A plausible incorrect implementation passes all examples | Add a risk-based scenario, contract/property test, or challenge check; do not claim the map was sufficient |
-| Map is repeatedly too large or ignored | Reduce it to material behaviours and automate the PR rendering/checks |
+| Agent proposes a new acceptance outcome after coding | Treat it as a specification and assurance-record amendment; obtain approval before using it for acceptance |
+| A plausible incorrect implementation passes all examples/scenarios | Add a risk-based scenario, contract/property test, or challenge check; do not claim the assurance record was sufficient |
+| Assurance record is repeatedly too large or ignored | Reduce it to material behaviours and automate the PR rendering/checks |
 | Post-merge defect contradicts an approved example | Trace it to requirement, example, test, or execution evidence; update the template/policy and add a focused regression check |
 
 ## Common Pitfalls
 
 1. **Mapping every unit test to a requirement.** Map material acceptance evidence, not every implementation detail. Lower-level tests support a verification item but need not each be a row.
-2. **Making the diagram the source of truth.** A manually edited picture drifts. Store structured links in YAML and render the diagram from it.
-3. **Approving the tests only after code exists.** This allows implementation to shape acceptance intent. Approve semantics before coding; review evidence after coding.
-4. **Treating `given / when / then` as quality by itself.** Gherkin grammar does not make an example outcome-oriented, complete, or falsifiable.
-5. **Making baseline failure an absolute ritual.** New behaviour should normally fail on base, but existing behaviour, refactoring, and nondeterministic environments require an explicit exception.
-6. **Using an LLM judge as the sole semantic owner.** An agent can challenge or summarize; accountable human judgment remains necessary for material behaviour.
-7. **Turning risk controls into universal bureaucracy.** Use the map for material behaviour changes; keep low-risk work light.
+2. **Duplicating OpenSpec scenarios in an Acceptance Map.** In `openspec` mode, OpenSpec owns requirement/scenario text; the assurance record owns approval, verification, and evidence links.
+3. **Making the diagram the source of truth.** A manually edited picture drifts. Store structured links in YAML and render the diagram from it.
+4. **Approving the tests only after code exists.** This allows implementation to shape acceptance intent. Approve semantics before coding; review evidence after coding.
+5. **Treating `given / when / then` as quality by itself.** Gherkin grammar does not make an example outcome-oriented, complete, or falsifiable.
+6. **Making baseline failure an absolute ritual.** New behaviour should normally fail on base, but existing behaviour, refactoring, and nondeterministic environments require an explicit exception.
+7. **Using an LLM judge as the sole semantic owner.** An agent can challenge or summarize; accountable human judgment remains necessary for material behaviour.
+8. **Turning risk controls into universal bureaucracy.** Use the assurance record for material behaviour changes; keep low-risk work light.
 
 ## Verification Checklist
 
-- [ ] Map is versioned under `.agent/acceptance/` and has a named semantic owner.
-- [ ] Map was approved before implementation for medium/high-risk work.
+- [ ] The delegation contract declares exactly one `spec_mode`, `canonical_spec_ref`, and `assurance_record_ref`.
+- [ ] In `standalone`, the map is versioned under `.agent/acceptance/`; in `openspec`, the assurance record is stored with the OpenSpec change.
+- [ ] The canonical requirements/scenarios and assurance record were approved before implementation for medium/high-risk work.
 - [ ] Every material requirement has at least one approved acceptance example.
 - [ ] Every approved example links to an executable test or named manual verification.
 - [ ] Examples state observable outcomes and plausible rejected wrong solutions.
-- [ ] Any semantic change has a new approved map version.
+- [ ] Any semantic change has a new approved assurance-record version and, in OpenSpec mode, an updated delta spec.
 - [ ] Candidate result and CI/manual evidence are recorded.
-- [ ] PR/commits and applicable delegation contract link back to the map.
-- [ ] No sensitive prompts, secrets, or chain-of-thought content were added to the map or evidence.
+- [ ] PR/commits and applicable delegation contract link back to the assurance record.
+- [ ] No sensitive prompts, secrets, or chain-of-thought content were added to the assurance record or evidence.
 - [ ] Any post-merge learning is converted into a focused regression check or a policy/template improvement.
 
 ## References
 
-- `templates/acceptance-map.yml` — minimal, machine-readable Acceptance Map.
+- `templates/acceptance-map.yml` — standalone requirement-to-evidence source of truth.
+- `templates/openspec-assurance.yml` — OpenSpec adapter; keeps scenario text in OpenSpec and evidence links beside the change.
+- `templates/openspec-verification-assurance.json` — OpenSpec-mode `verification_assurance` object for a delegation contract.
 - `agent-delegation-contract` — bound agent authority, scope, evidence, and escalation around the change.

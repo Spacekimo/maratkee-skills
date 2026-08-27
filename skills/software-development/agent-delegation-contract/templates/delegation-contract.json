@@ -74,7 +74,9 @@
   },
   "verification_assurance": {
     "risk_level": "medium",
-    "acceptance_map": ".agent/acceptance/ORD-184.yml",
+    "spec_mode": "standalone",
+    "canonical_spec_ref": ".agent/acceptance/ORD-184.yml",
+    "assurance_record_ref": ".agent/acceptance/ORD-184.yml",
     "semantic_owner": "orders-product-owner",
     "approval_required_before_code": true,
     "semantic_changes_require_reapproval": true,

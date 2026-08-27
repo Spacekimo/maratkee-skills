@@ -1,0 +1,34 @@
+# Use when OpenSpec holds the canonical requirements and scenarios for this change.
+# Keep this file with the change so it archives with the OpenSpec artifacts:
+# openspec/changes/prevent-duplicate-order/assurance.yml
+#
+# Do not copy scenario text here. Reference the OpenSpec capability, requirement,
+# and scenario by stable human-readable keys. Do not use Markdown line numbers.
+mode: openspec
+openspec_change: openspec/changes/prevent-duplicate-order
+version: 1
+status: approved # draft | approved | superseded
+
+semantic_owner:
+  name: orders-product-owner
+  approval: approved
+  approved_at: 2026-08-27
+
+verification:
+  - requirement_ref: ordering/idempotency#prevent-duplicate-order
+    scenario_ref: repeated-order-request
+    rejects:
+      - A second order is created.
+      - The API reports success but creates a duplicate payment.
+    test: tests/integration/orders/idempotency.spec.ts
+    baseline_result: fails # fails | passes_existing_behaviour | not_applicable
+    baseline_note: The requested repeat creates a duplicate order on the base commit.
+    candidate_result: passes
+    ci_evidence: https://ci.example.invalid/runs/123
+
+implementation:
+  pull_request: https://github.com/example/orders/pull/456
+  base_commit: abc123
+  candidate_commit: def456
+
+open_questions: []
