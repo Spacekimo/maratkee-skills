@@ -12,6 +12,10 @@ Produces a weekly evidence-led digest about how AI changes engineering managemen
 
 A reusable contract-as-code starter kit for bounded AI-agent work: task contract, short `AGENTS.md`, and GitHub Actions path guard. It treats the contract as one part of the control system alongside least-privilege access, isolated environments, CI, and human approval.
 
+### `agent-verification-assurance`
+
+A lightweight semantic-acceptance workflow for material behaviour changes. It prevents agents from silently converting an assumption into a passing acceptance test: evidence and alternatives are recorded in a Semantic Decision Map, a named human approves the interpretation, then tests, implementation, CI evidence, and a risk-proportionate evidence review prove the approved outcome. See the [skill README](skills/software-development/agent-verification-assurance/README.md).
+
 ### `extended-research`
 
 Multi-source research pipeline: dimensions → threads → search → relevance filter → deep reading → gap analysis → drill-down → synthesis. Includes optional deep research API mode and interactive source review for editorial workflows. Freshness gates and citation compliance for time-bounded research.

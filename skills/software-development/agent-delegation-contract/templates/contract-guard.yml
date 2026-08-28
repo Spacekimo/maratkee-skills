@@ -43,6 +43,19 @@ jobs:
           if missing:
               sys.exit('Incomplete contract: ' + ', '.join(missing))
 
+          owner = contract.get('owner', {})
+          owner_missing = [key for key in ('acceptance', 'evidence_reviewer', 'escalation', 'channel') if not owner.get(key)]
+          if owner_missing:
+              sys.exit('Incomplete owner block: ' + ', '.join(owner_missing))
+
+          assurance = contract.get('verification_assurance')
+          if assurance:
+              assurance_missing = [key for key in ('risk_level', 'spec_mode', 'canonical_spec_ref', 'assurance_record_ref', 'semantic_decision_ref', 'semantic_owner') if not assurance.get(key)]
+              if assurance_missing:
+                  sys.exit('Incomplete verification_assurance: ' + ', '.join(assurance_missing))
+              if assurance['risk_level'] == 'high' and owner['evidence_reviewer'] == assurance['semantic_owner']:
+                  sys.exit('High-risk work requires an evidence reviewer different from the semantic owner')
+
           scope = contract['scope']
           allowed = scope.get('allow_paths', [])
           denied = scope.get('deny_paths', [])

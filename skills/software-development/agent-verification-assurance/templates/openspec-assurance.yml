@@ -2,33 +2,57 @@
 # Keep this file with the change so it archives with the OpenSpec artifacts:
 # openspec/changes/prevent-duplicate-order/assurance.yml
 #
-# Do not copy scenario text here. Reference the OpenSpec capability, requirement,
-# and scenario by stable human-readable keys. Do not use Markdown line numbers.
+# Do not copy scenario text here. Reference OpenSpec requirement/scenario keys.
+# The linked Decision Map records evidence, interpretations, and owner decision.
 mode: openspec
 openspec_change: openspec/changes/prevent-duplicate-order
 version: 1
-status: approved # draft | approved | superseded
+status: draft # draft | approved | superseded
+contract_ref: .agent/contracts/ORD-184.json
+decision_map_ref: .agent/acceptance/ORD-184-decision.yml
 
 semantic_owner:
   name: orders-product-owner
-  approval: approved
-  approved_at: 2026-08-27
+  approval: pending # pending | approved | revise | clarify | accept_risk
+  approved_at: null
+  decision_evidence_ref: null
+
+evidence_reviewer:
+  name: orders-quality-owner
+  approval: pending # pending | approved | request_changes
+  reviewed_at: null
+
+requirement_basis:
+  - requirement_ref: ordering/idempotency#prevent-duplicate-order
+    decision_map_requirement_ref: R-1
+    basis: documented # documented | unwritten; decision evidence lives in the Decision Map
+    source_evidence_refs:
+      - docs/orders/idempotency.md#repeated-requests@abc123
+    risk_decision_note: null
 
 verification:
   - requirement_ref: ordering/idempotency#prevent-duplicate-order
     scenario_ref: repeated-order-request
+    decision_map_requirement_ref: R-1
     rejects:
-      - A second order is created.
-      - The API reports success but creates a duplicate payment.
+      - id: RJ-1
+        statement: A second order is created.
+        proof_ref: assertion:no_second_order
+      - id: RJ-2
+        statement: The API reports success but creates a duplicate payment.
+        proof_ref: assertion:no_second_charge
+    exercised_boundary: create-order API and payment integration
     test: tests/integration/orders/idempotency.spec.ts
-    baseline_result: fails # fails | passes_existing_behaviour | not_applicable
-    baseline_note: The requested repeat creates a duplicate order on the base commit.
-    candidate_result: passes
-    ci_evidence: https://ci.example.invalid/runs/123
+    baseline:
+      type: gap_demonstrated # gap_demonstrated | new_capability | existing_behavior_change | not_practical
+      evidence: The base commit creates a duplicate order on a repeated request.
+    candidate_result: pending # pending | passes | fails
+    ci_evidence: null
 
 implementation:
-  pull_request: https://github.com/example/orders/pull/456
+  pull_request: null
   base_commit: abc123
-  candidate_commit: def456
+  candidate_commit: null
 
 open_questions: []
+coverage_exclusions: []

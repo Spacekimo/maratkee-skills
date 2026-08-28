@@ -8,6 +8,7 @@
   },
   "owner": {
     "acceptance": "orders-tech-owner",
+    "evidence_reviewer": "orders-quality-owner",
     "escalation": "orders-tech-owner",
     "fallback": "payments-engineering-manager",
     "channel": "#orders-engineering",
@@ -34,7 +35,9 @@
   "scope": {
     "allow_paths": [
       "services/orders/**",
-      "tests/integration/orders/**"
+      "tests/integration/orders/**",
+      ".agent/acceptance/ORD-184.yml",
+      ".agent/acceptance/ORD-184-decision.yml"
     ],
     "deny_paths": [
       "migrations/**",
@@ -46,6 +49,7 @@
     "allowed": [
       "create_branch",
       "edit_code_in_allowed_paths",
+      "edit_assurance_artifacts_in_allowed_paths",
       "run_integration_tests",
       "open_draft_pull_request"
     ],
@@ -61,7 +65,8 @@
     "The specification and code give incompatible answers.",
     "The task requires personal or production data.",
     "A required test fails and the cause cannot be localized.",
-    "The task requires a new permission or an out-of-scope file change."
+    "The task requires a new permission or an out-of-scope file change.",
+    "A material interpretation has no recorded semantic-owner decision."
   ],
   "evidence": {
     "required": [
@@ -77,10 +82,11 @@
     "spec_mode": "standalone",
     "canonical_spec_ref": ".agent/acceptance/ORD-184.yml",
     "assurance_record_ref": ".agent/acceptance/ORD-184.yml",
+    "semantic_decision_ref": ".agent/acceptance/ORD-184-decision.yml",
     "semantic_owner": "orders-product-owner",
     "approval_required_before_code": true,
     "semantic_changes_require_reapproval": true,
-    "independent_evidence_review": "required"
+    "independent_evidence_review": "required_for_high_risk"
   },
   "review_after": "after three runs or the first repeated stop condition"
 }

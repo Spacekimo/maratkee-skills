@@ -1,0 +1,54 @@
+# One map per medium/high-risk task, for example:
+# .agent/acceptance/ORD-184-decision.yml
+#
+# This is evidence and a decision request, not the canonical specification.
+# Do not add secrets, production/customer data, or hidden model reasoning.
+work_item: ORD-184
+version: 1
+status: draft # draft | approved | superseded
+contract_ref: .agent/contracts/ORD-184.json
+
+semantic_owner:
+  name: orders-product-owner
+
+# Gate invariant: every material requirement below must record `approved` or
+# `accept_risk` plus a named-human decision reference before production code.
+
+discovery:
+  checked_at: 2026-08-28
+  sources:
+    - ref: docs/orders/idempotency.md#repeated-requests
+      basis: documented # documented | unwritten
+      immutable_ref: main@abc123
+      finding: Documentation requires no duplicate order for a repeated key.
+    - ref: tests/integration/orders/idempotency.spec.ts
+      basis: documented
+      immutable_ref: main@abc123
+      finding: Existing test checks duplicate orders but not duplicate charges.
+  observed_current_behavior: >-
+    A repeated request returns HTTP 200; whether a second payment is created is
+    not covered by the existing acceptance evidence.
+
+requirements:
+  - id: R-1
+    outcome: >-
+      A repeated valid create-order request with the same idempotency key does
+      not create a second order or charge.
+    evidence_refs:
+      - docs/orders/idempotency.md#repeated-requests
+      - tests/integration/orders/idempotency.spec.ts
+    selected_interpretation: >-
+      Return the original order result; do not create a second order or charge.
+    alternatives:
+      - id: ALT-1
+        interpretation: Return only accepted and require client polling.
+        consequence: Changes the response contract and client behaviour.
+    unknowns:
+      - What happens when the same key is reused with a different payload?
+    decision_question: >-
+      Approve returning the original result and prohibiting a second charge for
+      the same valid key?
+    decision: pending # pending | approved | revise | clarify | accept_risk
+    decided_at: null
+    decision_evidence_ref: null # PR comment, ticket, or signed decision record
+    risk_decision_note: null # required for accept_risk / unwritten basis

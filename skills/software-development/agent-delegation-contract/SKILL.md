@@ -59,12 +59,12 @@ Before delegating work, establish which controls are actually available. Do not 
 Before a coding agent starts, verify all of the following:
 
 1. A current contract exists at `.agent/contracts/<TASK-ID>.json`.
-2. `owner.acceptance`, `owner.escalation`, and a response channel are named.
+2. `owner.acceptance`, `owner.evidence_reviewer`, `owner.escalation`, and a response channel are named.
 3. `scope.allow_paths` is non-empty and `scope.deny_paths` covers known sensitive locations.
 4. `capabilities.forbidden` prohibits merge, deployment, credential changes, production-data access, and any other out-of-scope consequential action.
 5. Required checks can run in the assigned environment.
 6. The agent's credentials and branch permissions do not exceed the contract.
-7. For a medium/high-risk behaviour change, `verification_assurance.spec_mode`, `canonical_spec_ref`, and `assurance_record_ref` identify the approved semantics, evidence record, and semantic owner.
+7. For a medium/high-risk behaviour change, `verification_assurance.spec_mode`, `canonical_spec_ref`, `assurance_record_ref`, and `semantic_decision_ref` identify the approved semantics, evidence record, decision map, and semantic owner.
 
 If a condition fails, either fix the environment or lower autonomy to **prepare**. Never compensate for missing technical controls with stronger wording in a prompt.
 
@@ -132,7 +132,7 @@ For a medium/high-risk change that creates or changes user-visible behaviour, a 
 requirement / outcome → approved acceptance example → executable test → CI evidence
 ```
 
-Choose the mode explicitly in `verification_assurance`; never infer it from an `openspec/` directory. `standalone` uses `.agent/acceptance/<TASK-ID>.yml` as the canonical requirement/example map. `openspec` uses OpenSpec delta specs as canonical requirement/scenario text and keeps an `assurance.yml` record beside the change for approval and test/CI links. The PR may render either path visually.
+Choose the mode explicitly in `verification_assurance`; never infer it from an `openspec/` directory. `standalone` uses `.agent/acceptance/<TASK-ID>.yml` as the canonical requirement/example map. `openspec` uses OpenSpec delta specs as canonical requirement/scenario text and keeps an `assurance.yml` record beside the change for approval and test/CI links. In either mode, `semantic_decision_ref` points to the task's Semantic Decision Map: evidence, interpretations, alternatives, unknowns, and the semantic-owner decision. The map is context, not authority; the approved canonical spec remains the source of acceptance semantics.
 
 The implementation agent may draft the specification and assurance record but cannot approve it or silently change its semantics. The semantic owner approves the outcome and scenarios **before** implementation; after implementation, engineering/quality review confirms that approved scenarios link to real tests and evidence. For the complete workflow, use `agent-verification-assurance` and its `acceptance-map.yml` or `openspec-assurance.yml` template.
 
@@ -183,11 +183,11 @@ If the action is irreversible, affects another person, or reaches a production/p
 
 1. Copy `templates/delegation-contract.json` to `.agent/contracts/<TASK-ID>.json`.
 2. Replace every example value with task-specific information. Do not leave a placeholder owner, test, scope, or review condition.
-3. Add narrow `allow_paths` and explicit `deny_paths` for migrations, infrastructure, public APIs, credentials, and production configuration where applicable.
+3. Add narrow `allow_paths` and explicit `deny_paths` for migrations, infrastructure, public APIs, credentials, and production configuration where applicable. In `standalone`, allow only the exact Acceptance Map and Decision Map paths. In `openspec`, additionally allow only the exact change directory and Decision Map path — never a broad `openspec/**` glob.
 4. Define tests or observable evidence before the agent begins.
-5. Name the acceptance owner, escalation owner, fallback, channel, and response SLA.
-6. For a medium/high-risk behaviour change, declare the assurance `spec_mode`, draft the corresponding canonical specification and assurance record, and have its semantic owner approve it before code changes.
-7. Review the contract with the accountable human before granting credentials or launching work.
+5. Name the acceptance owner, evidence reviewer, escalation owner, fallback, channel, and response SLA. For high-risk work, the evidence reviewer is a different named human from the semantic owner.
+6. For a medium/high-risk behaviour change, declare the assurance `spec_mode`, draft the task-local Semantic Decision Map and corresponding canonical specification/assurance record, and have its named semantic owner approve the interpretation before code changes.
+7. Review the contract, decision map, and approved scenarios with the accountable human before granting credentials or launching work.
 
 ### Phase 3 — Enforce outside the prompt
 
@@ -207,7 +207,7 @@ Contract: .agent/contracts/<TASK-ID>.json
 1. Launch the agent with the task ID and exact contract path.
 2. On a stop condition, halt changes and send the escalation package.
 3. In CI, parse the contract, require key fields, and compare the pull-request file list with `allow_paths` and `deny_paths`.
-4. For an assurance record, check that every approved scenario has linked test/manual evidence and that the agent did not redefine acceptance semantics without owner approval.
+4. In review, check that the Semantic Decision Map has the required recorded human decisions, every approved scenario has linked test/manual evidence, and the agent did not redefine acceptance semantics without owner approval.
 5. Review evidence against `done_when` and approved examples/scenarios, not against an agent-written success claim.
 6. The named acceptance owner decides whether to merge. No protected-branch merge or production step is performed automatically by this skill.
 
@@ -252,6 +252,7 @@ After the first repeated stop condition or the contract's `review_after` point:
 - [ ] `done_when` is observable; `out_of_scope` is explicit.
 - [ ] Sources of truth are ranked, and conflicts are stop conditions.
 - [ ] `allow_paths` is narrow; sensitive locations are listed in `deny_paths`.
+- [ ] `allow_paths` explicitly includes the task's Decision Map and canonical assurance artifacts; in OpenSpec mode it includes only the exact change directory, never `openspec/**`.
 - [ ] Permitted and forbidden operations are explicit.
 - [ ] No secret, personal, customer, incident, or production credential is included.
 - [ ] The agent has only isolated, least-privilege access consistent with the contract.
