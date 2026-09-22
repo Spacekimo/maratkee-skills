@@ -4,7 +4,7 @@
 
 Freshness is part of evidence quality. The digest tracks three clocks independently:
 
-- **7 days:** what substantively changed this week;
+- **14 days:** what substantively changed in the current issue window;
 - **60 days:** ordinary supporting evidence;
 - **180 days:** a narrow exception for major research.
 
@@ -12,9 +12,9 @@ A source can be newly published and still contain stale evidence. Record the pag
 
 ## Roles and hard windows
 
-### `weekly_signal` — 7-day novelty gate
+### `weekly_signal` — 14-day novelty gate
 
-Every main digest theme needs at least one `weekly_signal` whose `event_at` falls within the seven days before `window_end`.
+`weekly_signal` remains the machine-readable field name. Every main digest theme needs at least one `weekly_signal` whose `event_at` falls within the fourteen days before `window_end`.
 
 Qualifying events:
 
@@ -32,7 +32,7 @@ Non-qualifying events:
 - a vendor announcement without new measured evidence;
 - a social post linking to an older source.
 
-`change_summary` must state what changed this week in one concrete sentence.
+`change_summary` must state what changed in the current issue window in one concrete sentence.
 
 ### `supporting` — 60-day evidence gate
 
@@ -66,17 +66,17 @@ A narrowly relevant older source may be consulted in a separate method-maturity 
 
 Foundational evidence cannot:
 
-- qualify a theme for the weekly issue;
+- qualify a theme for the current issue;
 - support a current performance or adoption number;
 - replace fresh corroboration;
 - upgrade a current-condition or implementation-specific claim.
 
 This creates two independent checks:
 
-- **freshness eligibility:** why this theme belongs in this week's issue;
+- **freshness eligibility:** why this theme belongs in the current issue;
 - **claim maturity:** how well the underlying method or phenomenon has been validated over time.
 
-Never collapse these checks into one score. A fresh implementation guide may be a valid weekly signal while its specific extension remains weakly calibrated; an older method can be mature without becoming fresh news.
+Never collapse these checks into one score. A fresh implementation guide may be a valid issue signal while its specific extension remains weakly calibrated; an older method can be mature without becoming fresh news.
 
 ## Supersession check
 
@@ -116,10 +116,10 @@ Before drafting, give a separate reviewer only the claims and source register. A
 
 Save the result as `sources/freshness-critic.md`. Every rejection must be resolved or the source removed.
 
-## Weekly workflow
+## Biweekly workflow
 
-1. Set `window_end` in the editorial timezone and derive `weekly_start = window_end - 7 days`.
-2. Discover substantive events inside the weekly window.
+1. Set `window_end` in the editorial timezone and derive `issue_start = window_end - 14 days`.
+2. Discover substantive events inside the 14-day issue window.
 3. Open the canonical primary source and determine `published_at`, `updated_at`, `event_at`, and `evidence_date`.
 4. Run the supersession check.
 5. Classify each source as `weekly_signal`, `supporting`, or `major_research`.

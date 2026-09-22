@@ -1,15 +1,15 @@
 ---
 name: weekly-ai-management-digest
-description: Use when producing a weekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces strict 7/60/180 freshness, claim-level medium-or-high eligibility for core claims and recommendations, and supersession gates before publication.
+description: Use when producing a biweekly evidence-led newsletter about how AI changes engineering management, team structures, delivery, cost, roles, governance, and operating models. Enforces strict 14/60/180 freshness, claim-level medium-or-high eligibility for core claims and recommendations, and supersession gates before publication.
 ---
 
-# Weekly AI Management Digest
+# Biweekly AI Management Digest
 
 ## Overview
 
-This skill produces a weekly evidence-led digest about how AI changes engineering management: team structures, delivery systems, cost, roles, quality controls, governance, and operating models.
+This skill produces a biweekly evidence-led digest about how AI changes engineering management: team structures, delivery systems, cost, roles, quality controls, governance, and operating models.
 
-The digest starts with what substantively changed during the last seven days. Supporting evidence must remain current enough for a fast-moving AI landscape. Fresh publication dates cannot disguise old datasets or superseded findings.
+The digest starts with what substantively changed during the last fourteen days. Supporting evidence must remain current enough for a fast-moving AI landscape. Fresh publication dates cannot disguise old datasets or superseded findings.
 
 Before every issue, read `references/source-freshness-gate.md` and `references/claim-level-evidence-rating.md`, then validate the source register with `scripts/freshness-check.py`.
 
@@ -186,13 +186,13 @@ Run `scripts/signal-register-check.py signals/signal-register.json` before relea
 ## Phase 1 — Define the issue window
 
 1. Set `window_end` in the editorial timezone.
-2. Derive `weekly_start = window_end - 7 days`.
+2. Derive `issue_start = window_end - 14 days`.
 3. Write both timestamps at the top of every source artifact.
 4. Start from `templates/source-register.json`.
 
-The issue window is always the preceding seven days. A skipped or delayed previous issue does not expand the novelty window.
+The issue window is always the preceding fourteen days. A skipped or delayed previous issue does not expand the novelty window.
 
-## Phase 2 — Discover weekly events
+## Phase 2 — Discover issue-window events
 
 Scan the available source layers in parallel. See **Required Capabilities** for layer definitions, capability requirements, and fallback rules.
 
@@ -208,7 +208,7 @@ Search official research indexes, academic databases, arXiv, Crossref, Semantic 
 
 Search specifically for:
 
-- new findings from the last seven days;
+- new findings from the last fourteen days;
 - updates to previously used studies;
 - follow-ups and changed conclusions;
 - corrections, revised methodology, and version history;
@@ -227,7 +227,7 @@ For every candidate:
 1. Open the canonical primary source.
 2. Verify the exact publication date on the source page.
 3. Identify the date of the underlying evidence or dataset.
-4. Describe what changed this week in one concrete sentence.
+4. Describe what changed in the current issue window in one concrete sentence.
 5. Record methodology, sample size, and evidence limitations.
 6. Classify the source as `weekly_signal`, `supporting`, or `major_research`.
 7. Run the supersession search from `references/source-freshness-gate.md`.
@@ -246,7 +246,7 @@ python scripts/evidence-check.py sources/source-register.json
 
 Any error blocks drafting. Fix the register, replace the source, narrow/remove the claim, or turn a low-evidence idea into a bounded experiment. Never waive a stale date or a low-evidence core claim silently.
 
-The register must contain at least one valid `weekly_signal`. Each main theme in the final issue must map to a weekly signal, even when the theme also uses recent supporting or major research.
+The register must contain at least one valid `weekly_signal`. This legacy field name denotes an issue signal; each main theme in the final issue must map to one, even when the theme also uses recent supporting or major research.
 
 ## Phase 5 — Independent freshness critic
 
@@ -269,7 +269,7 @@ Before outlining, run `references/issue-novelty-gate.md` against the preceding i
 
 Cluster accepted sources into three to five themes. Each theme needs:
 
-- the substantive weekly change;
+- the substantive change in the 14-day issue window;
 - current supporting evidence;
 - contradictions or uncertainty;
 - a practical management implication;
