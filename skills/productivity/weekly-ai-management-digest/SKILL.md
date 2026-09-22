@@ -97,6 +97,20 @@ Keep these themes in focus:
 
 The central question is: **what does this change mean for a leader responsible for delivery flow and outcomes?**
 
+## Editorial Portfolio and Non-Repetition
+
+A weekly series needs deliberate variety. A claim can be true and current while still repeating a conclusion the reader encountered recently.
+
+Before source collection, run `references/issue-novelty-gate.md` against at least the preceding four issues. The gate requires:
+
+- an issue ledger with thesis, management object, reader decision, primary editorial lane and dominant motifs;
+- rotation across four lanes: organisation design; people and professional growth; portfolio and economics; practice and reliability;
+- a four-issue quarantine for motifs that dominated a published issue;
+- a distinct management decision before research;
+- classification of every planned section and action as `new core`, `bridge` or `repeat`.
+
+A primary lane cannot repeat for the next three issues. Quarantined motifs may only bridge to a new argument. At least 75% of planned visible prose and every action item must be `new core`. The title, lead, section order, actions, final question and reading list must foreground the new management tension. If the candidate fails, change the issue object before deep research.
+
 ## Freshness Contract: 7 / 60 / 180
 
 The digest uses three independent clocks.
